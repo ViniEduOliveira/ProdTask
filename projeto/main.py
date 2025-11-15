@@ -1,23 +1,38 @@
 import os 
-from datetime import datetime
 import json
+from datetime import datetime
+
+
 
 ARQUIVO_TAREFAS = 'tarefas.json'
 ARQUIVO_HISTORICO = 'tarefas_arquivadas.json'
 
-'''
-    Funções auxiliares que vão imprimir o título do projeto 
-    e imprimir para que o usuário dê continuar no programa
-'''
+SEP = " | " 
+W_IDX = 5
+W_COD = 5
+W_TIT = 18 
+W_DESC = 15 
+W_PRI = 10
+W_STAT = 10
+W_ORI = 15
+W_DATA = 20
+W_TEMPO = 20
+
+LARGURA_TOTAL = (W_IDX + W_COD + W_TIT + W_DESC + W_PRI + W_STAT + W_ORI + W_DATA + W_TEMPO + (8 * len(SEP)))
+
+
+
 def pausar():
     input("\nAperter Enter para continuar...")
     os.system('cls')
 
 def cabecalho():
     print()
-    print("- - - - - - - - - - - - - - - - - - - - -")
-    print("- - - Gerenciamento da Tarefa Pessoal - - -")
-    print("- - - - - - - - - - - - - - - - - - - - -")
+    titulo = "Gerenciamento da Tarefa Pessoal"
+    print("-" * LARGURA_TOTAL)
+    print(f"{titulo.center(LARGURA_TOTAL, ' ')}")
+    print("-" * LARGURA_TOTAL)
+    
     return
 
 
@@ -65,6 +80,7 @@ def cadastro():
     print("Gerando código para a tarefa")
     codigo = gerarCod()
     pausar()
+    cabecalho()
     titulo = verificarTarefa()
     print(f"Código da tarefa '{titulo.title()}': {codigo}")
     pausar()
@@ -122,7 +138,7 @@ def cadastro():
     os.system('cls')
 
     data = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    print(data)
+    print(f"Data de criação: {data}")
     
     print(f"\nTarefa '{titulo.title()}' cadastrada com sucesso")
 
@@ -134,41 +150,73 @@ def cadastro():
         "Status": status,
         "Origem": origem,
         "Data": data,
+        "dataConclusao": None
     }
 
     tarefas.append(tarefa)
     return
 
 def tabelaVisualizar():
+  
     '''
-    Tabela onde mostra as tarefas com a ordem de prioridade 
-    maior para a menor. Além de todos estarem formatados caso 
-    em alguma coluna não tem algo preenchido
+    Tabela onde mostra as tarefas (sem a Descrição)
+    para garantir que caiba na tela.
     '''
     cabecalho()
     print("Executando função - Relatório\n")
     if not tarefas:
         print("Nenhuma tarefa cadastrada.")
         return
+    ordem_status = {
+        "FAZENDO": 1,
+        "PENDENTE": 2,
+        "CONCLUÍDA": 3
+    }
+    ordem_prioridade = {
+        "URGENTE": 1,
+        "ALTA": 2, 
+        "MÉDIA": 3, 
+        "BAIXA": 4
+    }
+    tarefas_ordenadas = sorted(tarefas, key=lambda x: 
+                               (ordem_status.get(x.get("Status", "PENDENTE"), 99), 
+                                ordem_prioridade.get(x.get("Prioridade"), 5)))
     
-    ordem_prioridade = {"URGENTE": 1, "ALTA": 2, "MÉDIA": 3, "BAIXA": 4}
-    tarefas_ordenadas = sorted(tarefas, key=lambda x: ordem_prioridade.get(x["Prioridade"], 5))
-
-   
-    LARGURA_TOTAL = 121 
+    print(f"{'Índice':<{W_IDX}}{SEP}"
+          f"{'Código':<{W_COD}}{SEP}"
+          f"{'Tarefa':<{W_TIT}}{SEP}"
+          f"{'Descricao':<{W_DESC}}{SEP}"
+          f"{'Prioridade':<{W_PRI}}{SEP}"
+          f"{'Status':<{W_STAT}}{SEP}"
+          f"{'Origem':<{W_ORI}}{SEP}"
+          f"{'Data Criação':<{W_DATA}}{SEP}"
+          f"{'Tempo Exec.':<{W_TEMPO}}")
     
-    print(f"{'Índice':<7}{'Código':<8}{'Tarefa':<20}{'Descrição':<30}{'Prioridade':<12}{'Status':<12}{'Origem':<20}{'Data':<12}")
     print("-" * LARGURA_TOTAL)
 
-    for i, descri in enumerate(tarefas_ordenadas, start=1):
-        titulo = descri.get('Titulo', 'N/A').title()
-        descricao = descri.get('Descricao', 'N/A') 
-        prioridade = descri.get('Prioridade', 'N/A')
-        status = descri.get('Status', 'N/A')
-        origem = descri.get('Origem', 'N/A')
-        data = descri.get('Data', 'N/A') 
 
-        print(f"{i:<7}{descri['Código']:<8}{titulo:<20}{descricao:<30}{prioridade:<12}{status:<12}{origem:<20}{data:<12}")
+    for i, tarefa in enumerate(tarefas_ordenadas, start=1):
+    
+        titulo = tarefa.get('Titulo', 'N/A').title()
+        descricao = tarefa.get('Descrição', 'N/A') 
+        prioridade = tarefa.get('Prioridade', 'N/A')
+        status = tarefa.get('Status', 'N/A')
+        origem = tarefa.get('Origem', 'N/A')
+        dataCriacao = tarefa.get('Data', 'N/A') 
+
+        tempoExec = "---" 
+        if status == "CONCLUÍDA":
+            tempoExec = calcularTempo(dataCriacao, tarefa.get('dataConclusao'))
+        
+        print(f"{str(i):<{W_IDX}.{W_IDX}}{SEP}"
+              f"{tarefa['Código']:<{W_COD}.{W_COD}}{SEP}"
+              f"{titulo:<{W_TIT}.{W_TIT}}{SEP}"
+              f"{descricao:<{W_DESC}.{W_DESC}}{SEP}"
+              f"{prioridade:<{W_PRI}.{W_PRI}}{SEP}"
+              f"{status:<{W_STAT}.{W_STAT}}{SEP}"
+              f"{origem:<{W_ORI}.{W_ORI}}{SEP}"
+              f"{dataCriacao:<{W_DATA}.{W_DATA}}{SEP}"
+              f"{tempoExec:<{W_TEMPO}.{W_TEMPO}}")
     
     print("-" * LARGURA_TOTAL)
 
@@ -253,9 +301,9 @@ def concluir():
 
     for tarefa in tarefas:
         if tarefa['Código'] == tarefaconclu:
-            tarefa["DataConclusao"]  = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            tarefa["dataConclusao"]  = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             tarefa["Status"] = 'CONCLUÍDA'
-            print(f"Tarefa '{tarefa['Titulo'].title()}' concluída na data {tarefa['DataConclusao']}")
+            print(f"Tarefa '{tarefa['Titulo'].title()}' concluída na data {tarefa['dataConclusao']}")
             return
     else:
         print("Tarefa não encontrada")
@@ -268,8 +316,8 @@ def excluirTarefa():
     encontrou = False
 
     for tarefa in tarefas:
-        if tarefa['Codigo'] == tarefaExcluir:
-            tarefa["Status"] = "Excluída"
+        if tarefa['Código'] == tarefaExcluir:
+            tarefa["Status"] = "EXCLUÍDA"
             print(f"Tarefa '{tarefa['Titulo'].title()}' marcada como 'EXCLUÍDA'.")
             print("Ela será movida para o arquivo morto na próxima limpeza.")
             encontrou = True
@@ -283,7 +331,7 @@ def excluirTarefa():
 def arquivamento():
     print("Executando função - Limpar e Arquivar tarefas\n")
     global tarefas
-    global tarefas_arquivadas
+    global tarefasArquivadas
 
     dataAtual = datetime.now()
     tarefasAtivas = []
@@ -298,23 +346,23 @@ def arquivamento():
 
         elif tarefa.get("Status") == "CONCLUÍDA":
             try:
-                data_conclusao = datetime.strptime(tarefa["DataConclusao"], "%d/%m/%Y %H:%M:%S")
-                if (dataAtual - data_conclusao).days > 7:
+                data_conclusao = datetime.strptime(tarefa["dataConclusao"], "%d/%m/%Y %H:%M:%S")
+                if (dataAtual - data_conclusao).days >= 7:
                     tarefa["Status"] = "ARQUIVADO" 
                     mover = True
             except (ValueError, KeyError, TypeError):
-                print(f"Aviso: Tarefa '{tarefa.get('Titulo')}' CONCLUÍDA mas sem DataConclusao válida.")
+                print(f"Aviso: Tarefa '{tarefa.get('Titulo')}' CONCLUÍDA mas sem Data de Conclusão válida.")
                 pass
         
         if mover:
             tarefasMover.append(tarefa)
-            tarefas_movidas += 1
+            tarefasMovidas += 1
         else:
             tarefasAtivas.append(tarefa)
         
-        if tarefasMovidas > 0:
-            tarefas = tarefasAtivas
-            tarefasArquivadas.extend(tarefasMover)
+    if tarefasMovidas > 0:
+        tarefas = tarefasAtivas
+        tarefasArquivadas.extend(tarefasMover)
 
         salvar_dados(ARQUIVO_TAREFAS, tarefas)
         salvar_dados(ARQUIVO_HISTORICO, tarefasArquivadas)
@@ -326,35 +374,61 @@ def arquivamento():
 def relatorioArquivamento():
     """
     Exibe todas as tarefas do arquivo de histórico
-    que NÃO estejam com o status 'EXCLUÍDA'.
-    Parâmetros: nenhum
-    Retorno: nenhum
+    que NÃO estejam com o status 'EXCLUÍDA', usando
+    o layout global da tabela.
     """
+    cabecalho()
     print("Executando função - Relatório de Arquivadas\n")
-    
-    if not tarefas_arquivadas:
-        print("Nenhuma tarefa foi arquivada ainda.")
+
+    if not tarefasArquivadas:
+        print(f"Nenhuma tarefa foi arquivada ainda.")
         return
 
-    print("--- Histórico de Tarefas Arquivadas (não-excluídas) ---")
-
-    tarefas_para_exibir = []
-    for t in tarefas_arquivadas:
+    tarefasNaoExcluidas = []
+    for t in tarefasArquivadas:
         if t.get('Status') != 'EXCLUÍDA':
-            tarefas_para_exibir.append(t)
+            tarefasNaoExcluidas.append(t)
 
-    if not tarefas_para_exibir:
-        print("Nenhuma tarefa arquivada (que não seja 'EXCLUÍDA') foi encontrada.")
+    if not tarefasNaoExcluidas:
+        print(f"Nenhuma tarefa arquivada foi encontrada.")
         return
 
-    print(f"{'Índice':<7}{'Título':<20}{'Status':<12}{'Concluída em':<20}")
+    print(f"{'Índice':<{W_IDX}}{SEP}"
+          f"{'Código':<{W_COD}}{SEP}"
+          f"{'Tarefa':<{W_TIT}}{SEP}"
+          f"{'Descrição':<{W_DESC}}{SEP}"
+          f"{'Prioridade':<{W_PRI}}{SEP}"
+          f"{'Status':<{W_STAT}}{SEP}"
+          f"{'Origem':<{W_ORI}}{SEP}"
+          f"{'Data Criação':<{W_DATA}}{SEP}"
+          f"{'Tempo Exec.':<{W_TEMPO}}")
     
-    for i, tarefa in enumerate(tarefas_para_exibir, start=1):
+    print("-" * LARGURA_TOTAL)
+
+    for i, tarefa in enumerate(tarefasNaoExcluidas, start=1):
         titulo = tarefa.get('Titulo', 'N/A').title()
+        descricao = tarefa.get('Descrição', 'N/A')
+        prioridade = tarefa.get('Prioridade', 'N/A')
         status = tarefa.get('Status', 'N/A')
-        data_conclusao = tarefa.get('DataConclusao', 'N/A')
+        origem = tarefa.get('Origem', 'N/A')
+        dataCriacao = tarefa.get('Data', 'N/A')
+        dataConclusao = tarefa.get('dataConclusao') 
+
+        tempoExec = "---" 
+        if status == "CONCLUÍDA" or status == "ARQUIVADO":
+             tempoExec = calcularTempo(dataCriacao, dataConclusao)
         
-        print(f"{i:<7}{titulo:<20}{status:<12}{data_conclusao:<20}")
+        print(f"{str(i):<{W_IDX}.{W_IDX}}{SEP}"
+              f"{tarefa.get('Código', 'N/A'):<{W_COD}.{W_COD}}{SEP}"
+              f"{titulo:<{W_TIT}.{W_TIT}}{SEP}"
+              f"{descricao:<{W_DESC}.{W_DESC}}{SEP}"
+              f"{prioridade:<{W_PRI}.{W_PRI}}{SEP}"
+              f"{status:<{W_STAT}.{W_STAT}}{SEP}"
+              f"{origem:<{W_ORI}.{W_ORI}}{SEP}"
+              f"{dataCriacao:<{W_DATA}.{W_DATA}}{SEP}"
+              f"{tempoExec:<{W_TEMPO}.{W_TEMPO}}")
+    
+    print("-" * LARGURA_TOTAL)
 
 
 
@@ -392,12 +466,28 @@ def verificarTarefa():
             print("Título inválido. Digite apenas letras e espaços (sem números ou símbolos).")
             pausar()
 
-        
+def calcularTempo(dataInicioSTR, dataFinalSTR):
+    try:
+        formato = "%d/%m/%Y %H:%M:%S"
+        dataInicio = datetime.strptime(dataInicioSTR, formato)
+        dataFinal = datetime.strptime(dataFinalSTR, formato)
 
+        tempo = dataFinal - dataInicio
 
+        dias = tempo.days
+        segundosTotais = tempo.seconds
 
+        horas = segundosTotais // 3600
+        minutos = (segundosTotais % 3600) // 60
+        segundos = segundosTotais % 60
 
-
+        if dias > 0:
+            return f"{dias} dia(s), {horas:02}:{minutos:02}:{segundos:02}"
+        else:
+            return f"{horas:02}:{minutos:02}:{segundos:02}"
+            
+    except (ValueError, TypeError):
+        return "N/A"
 
 
 '''
@@ -408,12 +498,14 @@ tarefas = carregar_dados(ARQUIVO_TAREFAS)
 tarefasArquivadas = carregar_dados(ARQUIVO_HISTORICO)
 contadorId = 0
 
-if tarefas:
+bibliotecaCodTarefas = tarefas + tarefasArquivadas
+
+if bibliotecaCodTarefas:
     '''
         Vai encontrar o maior código 
     '''
     try:
-        maiorId = int(max(tarefas, key=lambda x: int(x.get('Código', 0))).get('Código', 0))
+        maiorId = int(max(bibliotecaCodTarefas, key=lambda x: int(x.get('Código', 0))).get('Código', 0))
         contadorId = maiorId
     except (ValueError, TypeError):
         contadorId = 0 
@@ -423,11 +515,13 @@ while True:
     cabecalho()
     print("1 - Cadastrar")
     print("2 - Visualizar tabela de tarefas")
-    print("3 - Atualizar tarefa")
-    print("4 - Ver urgência de tarefa")
+    print("3 - Ver urgência de tarefa")
+    print("4 - Atualizar tarefa") 
     print("5 - Concluir tarefa")
     print("6 - Arquivar tarefa")
-    print("7 - Encerrar programa")
+    print("7 - Visualizar tabela de tarefas arquivadas")
+    print("8 - Excluir tarefa")
+    print("9 - Encerrar programa")
 
     escolha = input("\nEscolha o número do que deseja fazer: ")
     pausar()
@@ -439,9 +533,6 @@ while True:
         case "2":
             tabelaVisualizar()
         case "3":
-            atualizar()
-            salvar_dados(ARQUIVO_TAREFAS, tarefas)
-        case "4":
             tarefaAndamento = verificarUrgencia()
             if tarefaAndamento:
                 print("\nResumo da tarefa em andamento:")
@@ -450,13 +541,19 @@ while True:
                 print(f"Prioridade: {tarefaAndamento['Prioridade']}")
                 print(f"Status: {tarefaAndamento['Status']}")
                 salvar_dados(ARQUIVO_TAREFAS, tarefas)
+        case "4":
+            atualizar()
+            salvar_dados(ARQUIVO_TAREFAS, tarefas)
         case "5": 
             concluir()
-
-        case "6":
-            relatorioArquivamento()
             salvar_dados(ARQUIVO_TAREFAS, tarefas)
+        case "6":
+            arquivamento()
         case "7":
+            relatorioArquivamento()
+        case "8":
+            excluirTarefa()
+        case "9":
             print("Salvando dados antes de sair...")
             salvar_dados(ARQUIVO_TAREFAS, tarefas)
             salvar_dados(ARQUIVO_HISTORICO, tarefasArquivadas)
