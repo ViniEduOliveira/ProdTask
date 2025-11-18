@@ -1,21 +1,129 @@
-<h1 align="center">🚀 Gerenciador de Tarefas 🚀</h1>
+🚀 Gerenciador de Tarefas
+Este projeto é uma ferramenta simples de linha de comando para gerenciamento de tarefas , criada como parte da "Atividade de Aplicação: Estruturando Soluções". O sistema permite armazenar e acompanhar múltiplas tarefas, gerenciando-as por prioridade e status.
 
-<p align="center"> Um script de console em Python para gerenciamento de produtividade pessoal.
 
 
-O projeto permite criar, gerenciar e acompanhar tarefas por prioridade e status, com persistência de dados em arquivos JSON. </p>
+🚧 Status do Projeto
+✅ Concluído
+
+💻 Tecnologias Utilizadas
+Python
+
+
+JSON (para persistência de dados) 
 
 ✨ Funcionalidades Principais
-Criar, Atualizar e Concluir Tarefas: Gerencia o ciclo de vida completo de uma tarefa.
+O sistema implementa um ciclo de vida completo para o gerenciamento de tarefas:
 
-Obter Próxima Tarefa: Seleciona automaticamente a tarefa pendente de maior prioridade.
+1. CRUD de Tarefas
 
-Persistência em JSON: Salva as tarefas ativas em tarefas.json ao sair e carrega ao iniciar.
+Criar Tarefas: Adiciona uma nova tarefa à lista. Cada tarefa contém:
 
-Arquivamento Automático: Tarefas antigas ou excluídas são movidas para tarefas_arquivadas.json.
+ID Único (gerado automaticamente) 
 
-Relatórios: Exibe listas de tarefas ativas (com tempo de execução) e tarefas arquivadas.
+Título (obrigatório) 
 
-Tratamento de Erros: Valida entradas e usa try/except para evitar que o programa pare inesperadamente.
-<br>
-<p> <img alt="Tag Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img alt="Tag JSON" src="https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white"> <img alt="Tag CLI" src="https://img.shields.io/badge/CLI_Project-4D4D4D?style=for-the-badge"> <img alt="Tag Task Manager" src="https://img.shields.io/badge/Task_Manager-Blue?style=for-the-badge"> </p>
+Descrição 
+
+Prioridade (Urgente, alta, média, baixa) 
+
+Origem (E-mail, Telefone, Chamado do Sistema) 
+
+Data de Criação (automática) 
+
+Status (começa como "Pendente") 
+
+
+Atualizar Prioridade: Permite ao usuário alterar a prioridade de uma tarefa existente.
+
+
+Concluir Tarefas: Altera o status para "Concluída" e armazena a data/hora de conclusão.
+
+
+
+Excluir Tarefas: Realiza uma "exclusão lógica" alterando o status para "Excluída". O dado não é removido permanentemente.
+
+2. Gerenciamento de Fluxo
+Verificação de Urgência: O sistema permite ao usuário "pegar" a próxima tarefa. Ele busca a primeira tarefa com prioridade "Urgente" ; se não houver, busca a da próxima prioridade. A tarefa selecionada tem seu status atualizado para "Fazendo".
+
+
+
+
+Arquivamento Automático: Tarefas que foram "Concluídas" há mais de uma semana são automaticamente atualizadas para o status "Arquivado".
+
+3. Relatórios
+
+Relatório Geral: Exibe todas as informações de todas as tarefas. Para tarefas concluídas, calcula e exibe o tempo total de execução.
+
+
+
+Relatório de Arquivadas: Exibe uma lista contendo apenas as tarefas com status "Arquivado". Tarefas excluídas não aparecem neste relatório.
+
+
+4. Persistência de Dados
+
+tarefas.json: O sistema carrega todas as tarefas ativas deste arquivo ao iniciar e salva a lista atualizada ao sair.
+
+
+
+tarefas_arquivadas.json: Tarefas com status "Arquivado" ou "Excluída" são movidas para este arquivo de histórico.
+
+
+Criação Automática: Se os arquivos .json não existirem no início, o sistema os cria automaticamente com uma lista vazia [].
+
+
+⚙️ Instalação e Execução
+Este projeto não requer bibliotecas externas.
+
+Clone o repositório:
+
+Bash
+
+git clone [URL-DO-SEU-REPOSITÓRIO]
+Navegue até o diretório do projeto:
+
+Bash
+
+cd [NOME-DO-PROJETO]
+Execute o arquivo principal do Python:
+
+Bash
+
+python nome_do_arquivo.py
+O menu principal será exibido e os arquivos tarefas.json e tarefas_arquivadas.json serão criados na pasta se não existirem.
+
+
+🏗️ Estrutura e Boas Práticas
+O código foi estruturado seguindo os requisitos de boas práticas:
+
+
+Menu de Controle: Um menu principal centraliza todas as ações do sistema.
+
+
+Modularização: Cada opção do menu é implementada como uma função separada para facilitar a manutenção e leitura.
+
+
+
+Escopo de Variáveis: Utiliza variáveis globais para a lista de tarefas e o contador de ID , e variáveis locais para processamento interno em funções. A palavra-chave global é usada quando necessário.
+
+
+
+
+Defesas do Código:
+
+
+1ª Defesa (Validação Lógica): Funções de validação garantem que os dados inseridos pelo usuário (como Prioridade ou opções de menu) sejam válidos.
+
+
+2ª Defesa (Robustez Técnica): Blocos try/except são usados para tratar erros de conversão de tipo (ex: usuário digita texto em vez de número no menu), evitando que o programa pare abruptamente.
+
+
+Documentação: Todas as funções contêm Docstrings ("""...""") explicando seu propósito, parâmetros e retorno.
+
+
+👨‍💻 Autor
+Giulia Ayumi 
+Vinicius Oliveira
+
+giuayumii
+ViniEduOliveira
