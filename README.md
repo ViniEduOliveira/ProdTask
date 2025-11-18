@@ -1,7 +1,5 @@
 <h1 align="center">🚀 Gerenciador de Tarefas 🚀</h1>
 
-<p align="center"> <img alt="Status do Projeto" src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen?style=for-the-badge"> </p>
-
 <p align="center"> Um script de console em Python para gerenciamento de produtividade pessoal.
 
 
