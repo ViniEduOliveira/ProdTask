@@ -58,11 +58,9 @@ O código foi estruturado seguindo os requisitos de boas práticas:
 ## 👨‍💻 Autor
 
 **Giulia Ayumi**
+**GitHub: giuayumii**
 <br>
 **Vinicius Oliveira**
-<br>
-**giuayumii**
-<br>
-**ViniEduOliveira**
+**GitHub: ViniEduOliveira**
 
 
