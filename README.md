@@ -1,7 +1,6 @@
 # 🚀 Gerenciador de Tarefas
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Concluído-brightgreen)
-![Licença](https://img.shields.io/badge/License-MIT-yellow)
 ![Tecnologia](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
 ![Tecnologia](https://img.shields.io/badge/JSON-000000?style=flat&logo=json&logoColor=white)
 
@@ -76,11 +75,10 @@ O código foi estruturado seguindo os requisitos de boas práticas:
 
 ## 👨‍💻 Autor
 
-**[SEU NOME AQUI]**
+**Giulia Ayumi**
+**Vinicius Oliveira**
 
-* [Seu LinkedIn]
-* [Seu Portfólio ou outro link]
+**giuayumii**
+**ViniEduOliveira**
 
-## 📝 Licença
 
-Este projeto está sob a licença MIT.
