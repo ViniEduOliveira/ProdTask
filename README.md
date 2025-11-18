@@ -58,13 +58,13 @@ O código foi estruturado seguindo os requisitos de boas práticas:
 ## 👨‍💻 Autores
 
 <div align="center">
-**Giulia Ayumi**
+Giulia Ayumi
 <a href="https://github.com/giuayumii" target="_blank">
 <img src=https://img.shields.io/badge/github-%2324292e.svg?&style=for-the-badge&logo=github&logoColor=white alt=github style="margin-bottom: 5px;" />
 </a>
 <br>
 <div align="center">
-**Vinicius Oliveira**
+Vinicius Oliveira
 <a href="https://github.com/ViniEduOliveira" target="_blank">
 <img src=https://img.shields.io/badge/github-%2324292e.svg?&style=for-the-badge&logo=github&logoColor=white alt=github style="margin-bottom: 5px;" />
 </a>
