@@ -61,16 +61,20 @@ def cabecalho():
     Retorno: 
         Nenhum
     """
+<<<<<<< HEAD
 
     titulo = "Gerenciamento da Tarefa Pessoal"
     autores = "Giulia Ayumi | Vinicius Oliveira"
 
+=======
+    titulo = "Gerenciamento da Tarefa Pessoal"
+    autores = "Giulia Ayumi | Vinicius Oliveira"
+        
+>>>>>>> e7622cc0757c4dc4a980dd371e2442b195128e13
     print("-" * LARGURA_TOTAL)
     print(f"{titulo.center(LARGURA_TOTAL, ' ')}")
     print(f"{autores.center(LARGURA_TOTAL, ' ')}")
     print("-" * LARGURA_TOTAL)
-
-
 
 def carregar_dados(arquivo):
     """
